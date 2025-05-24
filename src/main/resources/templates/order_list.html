@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Admin Page</title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/css/admin/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/css/admin/css/sb-admin-2.min.css}" rel="stylesheet">
+    <style>
+        .order-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .order-card:hover {
+            transform: translateY(-5px);
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background: #4e73df;
+            color: white;
+            font-weight: 500;
+            border: none;
+        }
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+        .page-title {
+            color: #4e73df;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .status-processing {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        .status-completed {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        .status-cancelled {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <nav th:replace="sidebar :: sidebar"></nav>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav th:replace="topbar :: topbar"></nav>
+            <!-- End of Topbar -->
+
+            <!-- Begin Page Content -->
+            <div class="container-fluid">
+
+                <div class="container my-5">
+                    <h4 class="page-title text-center">List Of Orders</h4>
+                    <div class="order-card p-4">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Payment</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td th:text="${order.id}" class="align-middle"></td>
+                                <td class="align-middle">
+                                    <div th:text="${order.user.email}"></div>
+                                    <small class="text-muted" th:text="${order.address}"></small>
+                                </td>
+                                <td class="align-middle">
+                                    <div th:text="${#dates.format(order.createdAt, 'dd/MM/yyyy')}"></div>
+                                    <small class="text-muted" th:text="${#dates.format(order.createdAt, 'HH:mm')}"></small>
+                                </td>
+                                <td class="align-middle">
+                                    <span th:class="${'status-badge status-' + order.status.toLowerCase()}" 
+                                          th:text="${order.status}"></span>
+                                </td>
+                                <td class="align-middle" th:text="${#numbers.formatCurrency(order.totalPrice)}"></td>
+                                <td class="align-middle" th:text="${order.paymentMethod}"></td>
+                                <td class="align-middle">
+                                    <a th:href="@{/admin-page/orders/{id}(id=${order.id})}" 
+                                       class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- End of Main Content -->
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div th:replace = "logout :: logout"></div>
+
+<!-- Bootstrap core JavaScript-->
+<script th:src="@{/css/admin/vendor/jquery/jquery.min.js}"></script>
+<script th:src="@{/css/admin/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<!-- Core plugin JavaScript-->
+<script th:src="@{/css/admin/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+<!-- Custom scripts for all pages-->
+<script th:src="@{/css/admin/js/sb-admin-2.min.js}"></script>
+
+</body>
+
+</html>

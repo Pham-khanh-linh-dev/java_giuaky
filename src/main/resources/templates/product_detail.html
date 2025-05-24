@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <title>Product Detail</title>
+    <style>
+        body {
+            background: #f8f9fc;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .detail-card {
+            background: #fff;
+            border-radius: 2rem;
+            box-shadow: 0 8px 40px 0 rgba(90,0,120,0.10);
+            padding: 2.5rem 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+        .product-image {
+            border-radius: 1.5rem;
+            box-shadow: 0 2px 16px rgba(78,115,223,0.10);
+            width: 100%;
+            max-width: 350px;
+            object-fit: cover;
+            background: #f3f6fa;
+        }
+        .product-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin-bottom: 1rem;
+        }
+        .product-info {
+            font-size: 1.1rem;
+            color: #444;
+            margin-bottom: 1.2rem;
+        }
+        .product-label {
+            font-weight: 600;
+            color: #2e59d9;
+        }
+        .related-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4e73df;
+            margin: 2rem 0 1rem 0;
+        }
+        .related-card {
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(78,115,223,0.08);
+            background: #fff;
+            transition: box-shadow 0.2s;
+        }
+        .related-card:hover {
+            box-shadow: 0 4px 24px rgba(78,115,223,0.18);
+        }
+        .related-img {
+            border-radius: 1rem 1rem 0 0;
+            object-fit: cover;
+            height: 180px;
+            width: 100%;
+            background: #f3f6fa;
+        }
+        .related-name {
+            font-weight: 600;
+            color: #4e73df;
+            font-size: 1.1rem;
+        }
+        .btn-add-cart {
+            background: linear-gradient(90deg, #4e73df 0%, #2e59d9 100%);
+            color: #fff;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.7rem 2rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-add-cart:hover {
+            background: linear-gradient(90deg, #2e59d9 0%, #4e73df 100%);
+            transform: translateY(-2px) scale(1.04);
+        }
+    </style>
+</head>
+<body>
+<nav th:replace="dashboardtopbar::topbar"></nav>
+<div class="container detail-card">
+    <div class="row align-items-center">
+        <div class="col-md-5 text-center mb-4 mb-md-0">
+            <img th:src="${detailProduct.fileUrl}" alt="Product Photo" class="product-image" />
+        </div>
+        <div class="col-md-7">
+            <h1 class="product-title" th:text="${detailProduct.name}"></h1>
+            <div class="product-info"><span class="product-label">Price:</span> <span th:text="${detailProduct.price}"></span></div>
+            <div class="product-info"><span class="product-label">Description:</span> <span th:text="${detailProduct.description}"></span></div>
+            <div class="product-info"><span class="product-label">Category:</span> <span th:text="${detailProduct.category.categoryName}"></span></div>
+            <div class="product-info"><span class="product-label">Brand:</span> <span th:text="${detailProduct.brand}"></span></div>
+            <form method="post" th:action="@{/addToCart}" class="mt-4">
+                <input type="hidden" name="productId" th:value="${detailProduct.id}" />
+                <label for="quantity">Quantity:</label>
+                <input type="number" name="quantity" value="1" min="1" required style="width: 80px; border-radius: 1rem; border: 1px solid #e3e6f0; margin-left: 0.5rem; margin-right: 1rem; padding: 0.3rem 0.7rem;" />
+                <button class="btn-add-cart" type="submit">
+                    <i class="fas fa-cart-plus mr-2"></i>
+                    Add to cart
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="related-title">Related products</div>
+    <div class="row">
+        <div th:each="product : ${relatedProduct}" class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <a th:href="@{/detail/{id}(id=${product.id})}" style="text-decoration: none;">
+                <div class="related-card">
+                    <img th:src="@{'/uploads/' + ${product.fileUrl}}" alt="Product Photo" class="related-img" />
+                    <div class="p-3 text-center">
+                        <div class="related-name" th:text="${product.name}"></div>
+                        <div>Price: <span th:text="${product.price}"></span></div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap core JS-->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

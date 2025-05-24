@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th = "http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Order Detail</title>
+
+    <!-- Custom fonts for this template-->
+    <link th:href="@{/css/admin/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link th:href="@{/css/admin/css/sb-admin-2.min.css}" rel="stylesheet">
+    <style>
+        .order-detail-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .order-detail-card:hover {
+            transform: translateY(-5px);
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table thead th {
+            background: #4e73df;
+            color: white;
+            font-weight: 500;
+            border: none;
+        }
+        .table tbody tr {
+            transition: background-color 0.3s ease;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+        .page-title {
+            color: #4e73df;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+        .status-processing {
+            background-color: #b8daff;
+            color: #004085;
+        }
+        .status-completed {
+            background-color: #c3e6cb;
+            color: #155724;
+        }
+        .status-cancelled {
+            background-color: #f5c6cb;
+            color: #721c24;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #4e73df;
+        }
+    </style>
+</head>
+
+<body id="page-top">
+    <div id="wrapper">
+        <div th:replace="sidebar :: sidebar"></div>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div th:replace="topbar :: topbar"></div>
+                <div class="container my-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="page-title">Order Detail</h4>
+                        <a th:href="@{/admin-page/orders}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Orders
+                        </a>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="order-detail-card p-4 mb-4">
+                                <h5 class="mb-3">Order Information</h5>
+                                <div class="mb-2">
+                                    <span class="info-label">Order ID:</span>
+                                    <span th:text="${order.id}"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="info-label">Date:</span>
+                                    <span th:text="${#dates.format(order.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="info-label">Status:</span>
+                                    <span th:class="${'status-badge status-' + order.status.toLowerCase()}" 
+                                          th:text="${order.status}"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="info-label">Payment Method:</span>
+                                    <span th:text="${order.paymentMethod}"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="info-label">Total Amount:</span>
+                                    <span th:text="${#numbers.formatCurrency(order.totalPrice)}"></span>
+                                </div>
+                            </div>
+                            <div class="order-detail-card p-4">
+                                <h5 class="mb-3">Customer Information</h5>
+                                <div class="mb-2">
+                                    <span class="info-label">Email:</span>
+                                    <span th:text="${order.user.email}"></span>
+                                </div>
+                                <div class="mb-2">
+                                    <span class="info-label">Shipping Address:</span>
+                                    <span th:text="${order.address}"></span>
+                                </div>
+                                <div class="mb-2" th:if="${order.note != null}">
+                                    <span class="info-label">Note:</span>
+                                    <span th:text="${order.note}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="order-detail-card p-4">
+                                <h5 class="mb-3">Order Items</h5>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Discount</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="item : ${order.orderItems}">
+                                            <td>
+                                                <div th:text="${item.product.name}"></div>
+                                                <small class="text-muted" th:text="${item.product.brand}"></small>
+                                            </td>
+                                            <td th:text="${#numbers.formatCurrency(item.price)}"></td>
+                                            <td th:text="${item.quantity}"></td>
+                                            <td th:text="${item.discount + '%'}"></td>
+                                            <td th:text="${#numbers.formatCurrency(item.total)}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div th:replace="logout :: logout"></div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script th:src="@{/css/admin/vendor/jquery/jquery.min.js}"></script>
+    <script th:src="@{/css/admin/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script th:src="@{/css/admin/vendor/jquery-easing/jquery.easing.min.js}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script th:src="@{/css/admin/js/sb-admin-2.min.js}"></script>
+</body>
+</html> 
